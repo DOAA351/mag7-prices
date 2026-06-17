@@ -4,7 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mag 7 — Live Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script>
+    // Fallback CDN in case jsDelivr is blocked/unreachable.
+    if (typeof Chart === "undefined") {
+      document.write('<script src="https://unpkg.com/chart.js@4.4.4/dist/chart.umd.min.js"><\/script>');
+    }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -199,17 +205,17 @@
 
     <div class="last-update">Last update: <span id="lastUpdate">waiting for data...</span></div>
 
-    <div class="section-title">Equities — Real Prices from Yahoo Finance</div>
+    <div class="section-title">Equities — Live Prices from Yahoo Finance</div>
     <div class="stock-grid" id="stockGrid">
       <div style="color:var(--text-muted); font-size:14px; padding:40px; text-align:center; grid-column:1/-1;">
         Loading stock data...
       </div>
     </div>
 
-    <div class="section-title">Historical P/E Multiple — Trailing 12M (approx.)</div>
+    <div class="section-title">Price Performance — Total Return (real monthly closes)</div>
     <div class="chart-container">
       <div class="chart-header">
-        <h2>P/E Ratio Comparison</h2>
+        <h2>Normalized Return <span style="font-weight:400;color:var(--text-muted);font-size:13px;">(% since start of window)</span></h2>
         <div class="chart-controls">
           <button class="chart-btn active" data-range="1y">1Y</button>
           <button class="chart-btn" data-range="3y">3Y</button>
@@ -224,57 +230,184 @@
   </div>
 
   <div class="footer">
-    Prices sourced from Yahoo Finance via yfinance. P/E approximated using current trailing EPS × historical prices.
-    <br>Page re-checks for new data every 30 seconds. A GitHub Action refreshes prices every ~5 minutes during U.S. market hours.
+    Live prices pulled directly from Yahoo Finance in your browser, refreshed every 15s.
+    Company metadata and the historical chart come from a GitHub Action (yfinance) that updates every ~5 min.
+    <br>Performance chart = each stock's % return from the start of the selected window (real monthly closing prices).
   </div>
 
 <script>
 // ════════════════════════════════════════
 //  STATE
 // ════════════════════════════════════════
-let stockData = null;
-let peHistory = null;
+let stockData = null;       // metadata + working prices for the cards
+let priceHistory = null;    // real monthly closes for the performance chart
 let currentRange = 12;
 let previousPrices = {};
 
+// Embedded skeleton so the board can render even if data.json is unreachable.
+const FALLBACK_META = [
+  { ticker:"AAPL",  name:"Apple Inc.",          color:"#555555", description:"Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem." },
+  { ticker:"MSFT",  name:"Microsoft Corp.",     color:"#0078d4", description:"Enterprise software, cloud computing (Azure), and productivity tools including Office 365 and Teams." },
+  { ticker:"GOOGL", name:"Alphabet Inc.",       color:"#4285f4", description:"Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider." },
+  { ticker:"AMZN",  name:"Amazon.com, Inc.",    color:"#ff9900", description:"E-commerce and cloud infrastructure leader (AWS). Also expanding in advertising and AI services." },
+  { ticker:"NVDA",  name:"NVIDIA Corp.",        color:"#76b900", description:"Designs GPUs and AI accelerators. The dominant supplier of chips powering AI training and inference." },
+  { ticker:"META",  name:"Meta Platforms",      color:"#0668e1", description:"Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR." },
+  { ticker:"TSLA",  name:"Tesla, Inc.",         color:"#cc0000", description:"Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus)." },
+];
+
 // ════════════════════════════════════════
-//  FETCH data.json
+//  THE "TAPE" — last known good quote per ticker
+// ════════════════════════════════════════
+// Persisted to localStorage so that even if every live source AND data.json
+// are unreachable, the board shows the last available prices instead of
+// blanking out. { TICKER: {price, prevClose, source, ts} }
+const TAPE = {};
+try { Object.assign(TAPE, JSON.parse(localStorage.getItem("mag7_tape") || "{}")); } catch (e) {}
+function saveTape() { try { localStorage.setItem("mag7_tape", JSON.stringify(TAPE)); } catch (e) {} }
+
+// ════════════════════════════════════════
+//  DATA SOURCES — tried in order until one works
+// ════════════════════════════════════════
+// CORS proxies (independent services). The browser can't call market APIs
+// directly (no CORS headers), so each request is relayed through a proxy.
+const PROXIES = [
+  u => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,   // wraps body in {contents}
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,            // usually works from a real browser
+  u => `https://api.cors.lol/?url=${encodeURIComponent(u)}`,
+  u => `https://thingproxy.freeboard.io/fetch/${u}`,
+];
+
+// Fetch a URL through the proxy chain; returns the response body text or null.
+async function fetchViaProxy(url) {
+  for (const make of PROXIES) {
+    try {
+      const res = await fetch(make(url), { cache: "no-store" });
+      if (!res.ok) continue;
+      const txt = await res.text();
+      try { const j = JSON.parse(txt); if (j && typeof j.contents === "string") return j.contents; } catch (e) {}
+      return txt;
+    } catch (e) { /* try next proxy */ }
+  }
+  return null;
+}
+
+// Source 1: Yahoo Finance (primary). Tries two mirror hosts.
+async function srcYahoo(symbol) {
+  for (const host of ["query1.finance.yahoo.com", "query2.finance.yahoo.com"]) {
+    const body = await fetchViaProxy(`https://${host}/v8/finance/chart/${symbol}?interval=1d&range=1d`);
+    if (!body) continue;
+    try {
+      const m = JSON.parse(body)?.chart?.result?.[0]?.meta;
+      if (m && typeof m.regularMarketPrice === "number") {
+        const prev = typeof m.chartPreviousClose === "number" ? m.chartPreviousClose : m.previousClose;
+        return { price: m.regularMarketPrice, prevClose: prev, source: "Yahoo" };
+      }
+    } catch (e) {}
+  }
+  return null;
+}
+
+// Add more independent providers here; they are tried in order after Yahoo.
+const SOURCES = [srcYahoo];
+
+async function getQuote(symbol) {
+  for (const src of SOURCES) {
+    try { const q = await src(symbol); if (q && q.price) return q; } catch (e) {}
+  }
+  return null;   // caller will keep the last value from the tape
+}
+
+// ════════════════════════════════════════
+//  LIVE UPDATE — refresh prices, degrade gracefully
+// ════════════════════════════════════════
+async function updateLivePrices() {
+  ensureStockData();
+  let liveCount = 0;
+  await Promise.all(stockData.map(async (s) => {
+    const q = await getQuote(s.ticker);
+    if (q) {                                  // got a fresh quote → update the tape
+      const prev = q.prevClose != null ? q.prevClose
+                 : (TAPE[s.ticker] && TAPE[s.ticker].prevClose != null ? TAPE[s.ticker].prevClose : s.prev_close);
+      TAPE[s.ticker] = { price: q.price, prevClose: prev, source: q.source, ts: Date.now() };
+      liveCount++;
+    }
+    const t = TAPE[s.ticker];                 // apply tape (fresh OR last-known)
+    if (t && t.price != null) {
+      s.price = t.price;
+      s.prev_close = t.prevClose != null ? t.prevClose : s.prev_close;
+      s.change_pct = s.prev_close ? ((s.price - s.prev_close) / s.prev_close) * 100 : 0;
+    }
+  }));
+  saveTape();
+  renderCards();
+  setStatus(liveCount);
+}
+
+function setStatus(liveCount) {
+  const dot = document.getElementById("statusDot");
+  const txt = document.getElementById("statusText");
+  const total = stockData ? stockData.length : 0;
+  const now = new Date().toLocaleTimeString();
+  if (total && liveCount === total) {
+    dot.className = "status-dot"; txt.textContent = "Live";
+    setUpdate(now + "  ·  live from Yahoo");
+  } else if (liveCount > 0) {
+    dot.className = "status-dot"; txt.textContent = "Live " + liveCount + "/" + total;
+    setUpdate(now + "  ·  " + liveCount + "/" + total + " live, rest from last quote");
+  } else {
+    // No live source reachable — the tape keeps the board populated.
+    dot.className = "status-dot offline"; txt.textContent = "Cached";
+    setUpdate("live feed unreachable — showing last available prices");
+  }
+  document.getElementById("banner").classList.remove("show");
+}
+function setUpdate(s) { document.getElementById("lastUpdate").textContent = s; }
+
+// Build stockData from the embedded skeleton + tape if data.json never loaded.
+function ensureStockData() {
+  if (stockData) return;
+  stockData = FALLBACK_META.map(m => {
+    const t = TAPE[m.ticker] || {};
+    return { ...m, price: t.price || 0, prev_close: t.prevClose || 0, change_pct: 0,
+             trailing_pe: null, eps: null, market_cap: 0 };
+  });
+}
+
+// ════════════════════════════════════════
+//  METADATA + CHART — from data.json (GitHub Action, independent of the proxies)
 // ════════════════════════════════════════
 async function loadData() {
   try {
-    const res = await fetch("data.json?t=" + Date.now());
-    if (!res.ok) throw new Error("Not found");
+    const res = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
     const data = await res.json();
 
     stockData = data.stocks;
-    peHistory = data.pe_history;
+    priceHistory = data.price_history;
 
-    // Parse the ISO 8601 UTC timestamp and show it in the viewer's local time
-    const updated = new Date(data.last_updated);
-    const ageMin = (Date.now() - updated.getTime()) / 60000;
-    document.getElementById("lastUpdate").textContent =
-      isNaN(updated) ? data.last_updated : updated.toLocaleString();
+    // Seed the tape: prevClose is authoritative (updated daily by the Action);
+    // price is a baseline until a live quote refines it.
+    stockData.forEach(s => {
+      const t = TAPE[s.ticker] || (TAPE[s.ticker] = {});
+      t.prevClose = s.prev_close;
+      if (t.price == null) { t.price = s.price; t.source = "data.json"; }
+    });
 
-    // Status reflects how fresh the data actually is. The GitHub Action refreshes
-    // every ~5 min during market hours, so anything under ~15 min is "Live".
-    const dot = document.getElementById("statusDot");
-    const txt = document.getElementById("statusText");
-    if (isNaN(updated) || ageMin > 15) {
-      dot.className = "status-dot offline";
-      txt.textContent = isNaN(updated) ? "Live" : `Delayed (${Math.round(ageMin)}m)`;
-    } else {
-      dot.className = "status-dot";
-      txt.textContent = "Live";
-    }
-    document.getElementById("banner").classList.remove("show");
-
-    renderCards();
+    renderCards();        // shows baseline prices instantly; live fetch refines them
     renderChart(currentRange);
+    document.getElementById("banner").classList.remove("show");
   } catch (e) {
-    document.getElementById("statusDot").className = "status-dot offline";
-    document.getElementById("statusText").textContent = "Offline";
-    document.getElementById("banner").classList.add("show");
-    console.error("Failed to load data.json:", e);
+    console.error("data.json load failed:", e);
+    // Only show the banner if there is genuinely nothing to display.
+    if (!stockData && Object.keys(TAPE).length === 0) {
+      document.getElementById("statusDot").className = "status-dot offline";
+      document.getElementById("statusText").textContent = "Offline";
+      document.getElementById("banner").classList.add("show");
+    } else {
+      ensureStockData();
+      renderCards();
+    }
   }
 }
 
@@ -337,44 +470,54 @@ function renderCards() {
 }
 
 // ════════════════════════════════════════
-//  P/E CHART
+//  PERFORMANCE CHART — normalized % return
 // ════════════════════════════════════════
 function renderChart(months) {
-  if (!peHistory || Object.keys(peHistory).length === 0) {
-    document.getElementById("chartEmpty").style.display = "flex";
+  const empty = document.getElementById("chartEmpty");
+  if (typeof Chart === "undefined") {           // chart library not loaded yet
+    empty.style.display = "flex";
+    empty.textContent = "Loading chart library…";
     return;
   }
-  document.getElementById("chartEmpty").style.display = "none";
+  if (!priceHistory || Object.keys(priceHistory).length === 0) {
+    empty.style.display = "flex";
+    return;
+  }
+  empty.style.display = "none";
 
   const ctx = document.getElementById("peChart").getContext("2d");
   const isDark = document.body.getAttribute("data-theme") === "dark";
 
-  // Find common date range — use the longest series as reference
-  let maxLen = 0;
-  let referenceTicker = null;
-  for (const [ticker, data] of Object.entries(peHistory)) {
-    if (data.dates.length > maxLen) {
-      maxLen = data.dates.length;
-      referenceTicker = ticker;
-    }
+  // Use the longest series for the x-axis labels.
+  let maxLen = 0, referenceTicker = null;
+  for (const [ticker, data] of Object.entries(priceHistory)) {
+    if (data.dates.length > maxLen) { maxLen = data.dates.length; referenceTicker = ticker; }
   }
-
   if (!referenceTicker) return;
 
-  const labels = peHistory[referenceTicker].dates.slice(-months);
+  const labels = priceHistory[referenceTicker].dates.slice(-months);
 
-  const datasets = Object.entries(peHistory).map(([ticker, data]) => ({
-    label: ticker,
-    data: data.values.slice(-months),
-    borderColor: data.color,
-    backgroundColor: "transparent",
-    borderWidth: 2,
-    pointRadius: 0,
-    pointHitRadius: 10,
-    tension: 0.35,
-  }));
+  // Normalize each stock to % return from the first month in the window, so
+  // the lines are directly comparable regardless of share price.
+  const datasets = Object.entries(priceHistory).map(([ticker, data]) => {
+    const closes = data.closes.slice(-months);
+    const base = closes.length ? closes[0] : 0;
+    const returns = closes.map(c => base ? ((c / base) - 1) * 100 : 0);
+    return {
+      label: ticker,
+      data: returns,
+      borderColor: data.color,
+      backgroundColor: "transparent",
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHitRadius: 10,
+      tension: 0.3,
+    };
+  });
 
   if (window.peChartInstance) window.peChartInstance.destroy();
+
+  const fmtPct = v => (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
 
   window.peChartInstance = new Chart(ctx, {
     type: "line",
@@ -398,7 +541,7 @@ function renderChart(months) {
           bodyColor: isDark ? "#8b949e" : "#5f6577",
           borderColor: isDark ? "#30363d" : "#e2e4ea",
           borderWidth: 1, padding: 12, cornerRadius: 8, displayColors: true,
-          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}x` },
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${fmtPct(ctx.parsed.y)}` },
         },
       },
       scales: {
@@ -409,7 +552,7 @@ function renderChart(months) {
         y: {
           ticks: {
             color: isDark ? "#6e7681" : "#8b90a0", font: { size: 11 },
-            callback: v => v + "x",
+            callback: v => (v > 0 ? "+" : "") + v + "%",
           },
           grid: { color: isDark ? "rgba(48,54,61,0.5)" : "rgba(226,228,234,0.6)" },
         },
@@ -440,7 +583,7 @@ function toggleTheme() {
   body.setAttribute("data-theme", isDark ? "light" : "dark");
   document.getElementById("theme-icon").textContent = isDark ? "🌙" : "☀️";
   document.getElementById("theme-label").textContent = isDark ? "Dark" : "Light";
-  if (peHistory) renderChart(currentRange);
+  if (priceHistory) renderChart(currentRange);
 }
 
 // ════════════════════════════════════════
@@ -454,10 +597,14 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ════════════════════════════════════════
-//  MAIN LOOP — fetch data.json every 5s
+//  MAIN LOOP
 // ════════════════════════════════════════
-loadData();
-setInterval(loadData, 30000);
+// 1) load metadata + chart from data.json, then immediately pull live prices.
+// 2) refresh live prices from Yahoo every 15s.
+// 3) refresh metadata + chart (slow-moving) every 5 min.
+loadData().then(updateLivePrices);
+setInterval(updateLivePrices, 15000);
+setInterval(loadData, 300000);
 </script>
 
 </body>

@@ -136,27 +136,26 @@ def fetch_one(ticker):
         "market_cap": market_cap,
     }
 
-    # Historical P/E: 5y of monthly closes / current EPS (approximation, since
-    # we use today's EPS rather than each month's trailing EPS).
-    pe_series = None
-    if eps and eps > 0:
-        try:
-            hist = t.history(period="5y", interval="1mo")
-            if not hist.empty:
-                dates, values = [], []
-                for date, row in hist.iterrows():
-                    close = row["Close"]
-                    approx_pe = round(close / eps, 1)
-                    if 0 < approx_pe < 500:  # sanity bounds
-                        values.append(approx_pe)
-                        dates.append(date.strftime("%b %y"))
-                if values:
-                    pe_series = {"dates": dates, "values": values,
-                                 "color": COLORS.get(ticker, "#888888")}
-        except Exception as e:
-            print(f"    (P/E history unavailable for {ticker}: {e})")
+    # Historical monthly closes (REAL prices) for the performance chart. The
+    # browser normalizes these to % return per selected window, so the chart
+    # actually means something (relative performance) instead of a fake P/E.
+    price_series = None
+    try:
+        hist = t.history(period="5y", interval="1mo")
+        if not hist.empty:
+            dates, closes = [], []
+            for date, row in hist.iterrows():
+                close = row["Close"]
+                if close and close > 0:
+                    closes.append(round(float(close), 2))
+                    dates.append(date.strftime("%b %y"))
+            if closes:
+                price_series = {"dates": dates, "closes": closes,
+                                "color": COLORS.get(ticker, "#888888")}
+    except Exception as e:
+        print(f"    (price history unavailable for {ticker}: {e})")
 
-    return stock, pe_series
+    return stock, price_series
 
 
 def fetch_all():
@@ -164,14 +163,14 @@ def fetch_all():
     print(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Fetching prices...")
 
     stock_data = []
-    pe_history = {}
+    price_history = {}
 
     for ticker in TICKERS:
         try:
-            stock, pe_series = fetch_one(ticker)
+            stock, price_series = fetch_one(ticker)
             stock_data.append(stock)
-            if pe_series:
-                pe_history[ticker] = pe_series
+            if price_series:
+                price_history[ticker] = price_series
             print(f"  {ticker}: ${stock['price']:.2f} "
                   f"({stock['change_pct']:+.2f}%) "
                   f"prevClose ${stock['prev_close']:.2f} "
@@ -196,7 +195,7 @@ def fetch_all():
         "last_updated": datetime.datetime.now(datetime.timezone.utc)
                                 .strftime("%Y-%m-%dT%H:%M:%SZ"),
         "stocks": stock_data,
-        "pe_history": pe_history,
+        "price_history": price_history,
     }
 
     with open("data.json", "w", encoding="utf-8") as f:
