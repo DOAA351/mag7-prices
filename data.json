@@ -1,89 +1,89 @@
 {
-  "last_updated": "2026-06-17T17:05:31Z",
+  "last_updated": "2026-06-17T17:07:08Z",
   "stocks": [
     {
       "ticker": "AAPL",
       "name": "Apple Inc.",
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
-      "price": 297.16,
+      "price": 297.2,
       "prev_close": 298.9,
-      "change_pct": -0.58,
+      "change_pct": -0.57,
       "trailing_pe": 36.0,
       "eps": 8.26,
-      "market_cap": 4364568363008
+      "market_cap": 4365080592384
     },
     {
       "ticker": "MSFT",
       "name": "Microsoft Corporation",
       "description": "Enterprise software, cloud computing (Azure), and productivity tools including Office 365 and Teams.",
       "color": "#0078d4",
-      "price": 383.97,
+      "price": 383.87,
       "prev_close": 393.15,
-      "change_pct": -2.34,
+      "change_pct": -2.36,
       "trailing_pe": 22.9,
       "eps": 16.78,
-      "market_cap": 2852184653824
+      "market_cap": 2851627597824
     },
     {
       "ticker": "GOOGL",
       "name": "Alphabet Inc.",
       "description": "Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider.",
       "color": "#4285f4",
-      "price": 364.98,
+      "price": 364.77,
       "prev_close": 371.97,
-      "change_pct": -1.88,
-      "trailing_pe": 27.9,
+      "change_pct": -1.94,
+      "trailing_pe": 27.8,
       "eps": 13.1,
-      "market_cap": 4453696012288
+      "market_cap": 4450888450048
     },
     {
       "ticker": "AMZN",
       "name": "Amazon.com, Inc.",
       "description": "E-commerce and cloud infrastructure leader (AWS). Also expanding in advertising and AI services.",
       "color": "#ff9900",
-      "price": 239.62,
+      "price": 239.53,
       "prev_close": 245.77,
-      "change_pct": -2.5,
+      "change_pct": -2.54,
       "trailing_pe": 30.8,
       "eps": 7.77,
-      "market_cap": 2577618698240
+      "market_cap": 2576650600448
     },
     {
       "ticker": "NVDA",
       "name": "NVIDIA Corporation",
       "description": "Designs GPUs and AI accelerators. The dominant supplier of chips powering AI training and inference.",
       "color": "#76b900",
-      "price": 206.98,
+      "price": 207.05,
       "prev_close": 207.55,
-      "change_pct": -0.27,
+      "change_pct": -0.24,
       "trailing_pe": 31.7,
       "eps": 6.53,
-      "market_cap": 5013262303232
+      "market_cap": 5015078961152
     },
     {
       "ticker": "META",
       "name": "Meta Platforms, Inc.",
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
-      "price": 577.49,
+      "price": 577.87,
       "prev_close": 597.68,
-      "change_pct": -3.38,
+      "change_pct": -3.32,
       "trailing_pe": 21.0,
       "eps": 27.49,
-      "market_cap": 1466155270144
+      "market_cap": 1466878656512
     },
     {
       "ticker": "TSLA",
       "name": "Tesla, Inc.",
       "description": "Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus).",
       "color": "#cc0000",
-      "price": 403.73,
+      "price": 403.97,
       "prev_close": 402.84,
-      "change_pct": 0.22,
-      "trailing_pe": 370.4,
+      "change_pct": 0.28,
+      "trailing_pe": 370.6,
       "eps": 1.09,
-      "market_cap": 1516298436608
+      "market_cap": 1517162201088
     }
   ],
   "pe_history": {
@@ -464,7 +464,7 @@
         21.9,
         29.4,
         29.0,
-        27.9
+        27.8
       ],
       "color": "#4285f4"
     },
@@ -972,7 +972,7 @@
         341.1,
         350.1,
         399.8,
-        370.4
+        370.6
       ],
       "color": "#cc0000"
     }
