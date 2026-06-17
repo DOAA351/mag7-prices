@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mag 7 — Live Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #f6f7f9;
+      --bg-card: #ffffff;
+      --bg-header: #0b1120;
+      --text-primary: #1a1d26;
+      --text-secondary: #5f6577;
+      --text-muted: #8b90a0;
+      --border: #e2e4ea;
+      --accent: #3366ff;
+      --green: #0fba6a;
+      --red: #ef4444;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --radius: 10px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0d1117;
+      --bg-card: #161b22;
+      --bg-header: #010409;
+      --text-primary: #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted: #6e7681;
+      --border: #30363d;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.3s;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--bg-header);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .logo {
+      width: 36px; height: 36px; background: var(--accent); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; color: #fff; font-size: 16px;
+    }
+    .header h1 { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+    .header h1 span { color: #8b949e; font-weight: 400; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .status { display: flex; align-items: center; gap: 8px; color: #8b949e; font-size: 13px; }
+    .status-dot {
+      width: 8px; height: 8px; background: var(--green); border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .status-dot.offline { background: var(--red); }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .theme-toggle {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+      color: #fff; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+      font-size: 13px; font-weight: 500; transition: background 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .theme-toggle:hover { background: rgba(255,255,255,0.18); }
+
+    /* ── Main ── */
+    .main { max-width: 1280px; margin: 0 auto; padding: 28px 32px 48px; }
+    .section-title {
+      font-size: 14px; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px;
+    }
+
+    /* ── Banner ── */
+    .banner {
+      background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
+      border-radius: var(--radius); padding: 14px 20px; margin-bottom: 24px;
+      font-size: 13px; display: none; align-items: center; gap: 10px;
+    }
+    [data-theme="dark"] .banner { background: #332701; color: #ffc107; border-color: #664d00; }
+    .banner.show { display: flex; }
+
+    /* ── Stock Grid ── */
+    .stock-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px; margin-bottom: 40px;
+    }
+    .stock-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .stock-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .stock-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .stock-identity { display: flex; align-items: center; gap: 10px; }
+    .stock-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: #fff;
+    }
+    .stock-name { font-size: 15px; font-weight: 600; }
+    .stock-ticker { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+    .stock-price { text-align: right; }
+    .stock-price .price {
+      font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.5px;
+    }
+    .stock-price .change {
+      font-size: 12px; font-weight: 600; padding: 2px 7px;
+      border-radius: 5px; display: inline-block; margin-top: 3px;
+    }
+    .change.up { color: var(--green); background: rgba(15,186,106,0.1); }
+    .change.down { color: var(--red); background: rgba(239,68,68,0.1); }
+    .stock-meta {
+      display: flex; gap: 16px; margin-bottom: 10px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stock-meta-item { font-size: 12px; color: var(--text-muted); }
+    .stock-meta-item strong { color: var(--text-secondary); }
+    .stock-desc {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.55;
+      border-top: 1px solid var(--border); padding-top: 12px;
+    }
+
+    /* ── Chart Section ── */
+    .chart-container {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow);
+    }
+    .chart-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .chart-header h2 { font-size: 16px; font-weight: 600; }
+    .chart-controls { display: flex; gap: 6px; }
+    .chart-btn {
+      padding: 6px 14px; border: 1px solid var(--border); background: var(--bg-card);
+      color: var(--text-secondary); border-radius: 6px; font-size: 12px;
+      font-weight: 500; cursor: pointer; transition: all 0.15s;
+    }
+    .chart-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .chart-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .chart-wrap { position: relative; height: 380px; }
+
+    .chart-empty {
+      display: flex; align-items: center; justify-content: center;
+      height: 100%; color: var(--text-muted); font-size: 14px;
+    }
+
+    .footer { text-align: center; padding: 24px; font-size: 12px; color: var(--text-muted); }
+
+    .last-update { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+    @media (max-width: 640px) {
+      .header { padding: 16px; }
+      .main { padding: 20px 16px 40px; }
+      .stock-grid { grid-template-columns: 1fr; }
+      .chart-wrap { height: 260px; }
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">M7</div>
+      <h1>Magnificent 7 <span>Live Dashboard</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Connecting...</span>
+      </div>
+      <div class="status">
+        <span id="clock">--:--:--</span>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> <span id="theme-label">Dark</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="banner" id="banner">
+      ⚠️ <span>Could not load <code>data.json</code>. If running locally, start <code>python fetch_prices.py</code> and use a local web server (not file://). On GitHub Pages, check that the price-update Action has run.</span>
+    </div>
+
+    <div class="last-update">Last update: <span id="lastUpdate">waiting for data...</span></div>
+
+    <div class="section-title">Equities — Real Prices from Yahoo Finance</div>
+    <div class="stock-grid" id="stockGrid">
+      <div style="color:var(--text-muted); font-size:14px; padding:40px; text-align:center; grid-column:1/-1;">
+        Loading stock data...
+      </div>
+    </div>
+
+    <div class="section-title">Historical P/E Multiple — Trailing 12M (approx.)</div>
+    <div class="chart-container">
+      <div class="chart-header">
+        <h2>P/E Ratio Comparison</h2>
+        <div class="chart-controls">
+          <button class="chart-btn active" data-range="1y">1Y</button>
+          <button class="chart-btn" data-range="3y">3Y</button>
+          <button class="chart-btn" data-range="5y">5Y</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="peChart"></canvas>
+        <div class="chart-empty" id="chartEmpty">Waiting for historical data...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Prices sourced from Yahoo Finance via yfinance. P/E approximated using current trailing EPS × historical prices.
+    <br>Page re-checks for new data every 30 seconds. A GitHub Action refreshes prices every ~5 minutes during U.S. market hours.
+  </div>
+
+<script>
+// ════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════
+let stockData = null;
+let peHistory = null;
+let currentRange = 12;
+let previousPrices = {};
+
+// ════════════════════════════════════════
+//  FETCH data.json
+// ════════════════════════════════════════
+async function loadData() {
+  try {
+    const res = await fetch("data.json?t=" + Date.now());
+    if (!res.ok) throw new Error("Not found");
+    const data = await res.json();
+
+    stockData = data.stocks;
+    peHistory = data.pe_history;
+
+    // Parse the ISO 8601 UTC timestamp and show it in the viewer's local time
+    const updated = new Date(data.last_updated);
+    const ageMin = (Date.now() - updated.getTime()) / 60000;
+    document.getElementById("lastUpdate").textContent =
+      isNaN(updated) ? data.last_updated : updated.toLocaleString();
+
+    // Status reflects how fresh the data actually is. The GitHub Action refreshes
+    // every ~5 min during market hours, so anything under ~15 min is "Live".
+    const dot = document.getElementById("statusDot");
+    const txt = document.getElementById("statusText");
+    if (isNaN(updated) || ageMin > 15) {
+      dot.className = "status-dot offline";
+      txt.textContent = isNaN(updated) ? "Live" : `Delayed (${Math.round(ageMin)}m)`;
+    } else {
+      dot.className = "status-dot";
+      txt.textContent = "Live";
+    }
+    document.getElementById("banner").classList.remove("show");
+
+    renderCards();
+    renderChart(currentRange);
+  } catch (e) {
+    document.getElementById("statusDot").className = "status-dot offline";
+    document.getElementById("statusText").textContent = "Offline";
+    document.getElementById("banner").classList.add("show");
+    console.error("Failed to load data.json:", e);
+  }
+}
+
+// ════════════════════════════════════════
+//  RENDER STOCK CARDS
+// ════════════════════════════════════════
+function formatMarketCap(n) {
+  if (!n) return "N/A";
+  if (n >= 1e12) return "$" + (n / 1e12).toFixed(2) + "T";
+  if (n >= 1e9) return "$" + (n / 1e9).toFixed(0) + "B";
+  return "$" + (n / 1e6).toFixed(0) + "M";
+}
+
+function renderCards() {
+  if (!stockData) return;
+  const grid = document.getElementById("stockGrid");
+
+  grid.innerHTML = stockData.map((s, i) => {
+    const sign = s.change_pct >= 0 ? "+" : "";
+    const dir = s.change_pct >= 0 ? "up" : "down";
+    const prevPrice = previousPrices[s.ticker];
+    const flash = prevPrice && prevPrice !== s.price;
+    const flashDir = prevPrice && s.price > prevPrice ? "green" : "red";
+
+    previousPrices[s.ticker] = s.price;
+
+    return `
+    <div class="stock-card">
+      <div class="stock-top">
+        <div class="stock-identity">
+          <div class="stock-icon" style="background:${s.color}">${s.ticker.slice(0,2)}</div>
+          <div>
+            <div class="stock-name">${s.name}</div>
+            <div class="stock-ticker">${s.ticker}</div>
+          </div>
+        </div>
+        <div class="stock-price">
+          <div class="price" id="price-${s.ticker}" style="${flash ? `color:var(--${flashDir === 'green' ? 'green' : 'red'})` : ''}">
+            $${s.price.toFixed(2)}
+          </div>
+          <div class="change ${dir}">${sign}${s.change_pct.toFixed(2)}%</div>
+        </div>
+      </div>
+      <div class="stock-meta">
+        <div class="stock-meta-item">Prev Close: <strong>$${s.prev_close.toFixed(2)}</strong></div>
+        <div class="stock-meta-item">P/E: <strong>${s.trailing_pe ? s.trailing_pe.toFixed(1) + 'x' : 'N/A'}</strong></div>
+        <div class="stock-meta-item">Cap: <strong>${formatMarketCap(s.market_cap)}</strong></div>
+      </div>
+      <div class="stock-desc">${s.description}</div>
+    </div>`;
+  }).join("");
+
+  // Reset flash colors after 800ms
+  setTimeout(() => {
+    stockData.forEach(s => {
+      const el = document.getElementById("price-" + s.ticker);
+      if (el) el.style.color = "";
+    });
+  }, 800);
+}
+
+// ════════════════════════════════════════
+//  P/E CHART
+// ════════════════════════════════════════
+function renderChart(months) {
+  if (!peHistory || Object.keys(peHistory).length === 0) {
+    document.getElementById("chartEmpty").style.display = "flex";
+    return;
+  }
+  document.getElementById("chartEmpty").style.display = "none";
+
+  const ctx = document.getElementById("peChart").getContext("2d");
+  const isDark = document.body.getAttribute("data-theme") === "dark";
+
+  // Find common date range — use the longest series as reference
+  let maxLen = 0;
+  let referenceTicker = null;
+  for (const [ticker, data] of Object.entries(peHistory)) {
+    if (data.dates.length > maxLen) {
+      maxLen = data.dates.length;
+      referenceTicker = ticker;
+    }
+  }
+
+  if (!referenceTicker) return;
+
+  const labels = peHistory[referenceTicker].dates.slice(-months);
+
+  const datasets = Object.entries(peHistory).map(([ticker, data]) => ({
+    label: ticker,
+    data: data.values.slice(-months),
+    borderColor: data.color,
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    pointRadius: 0,
+    pointHitRadius: 10,
+    tension: 0.35,
+  }));
+
+  if (window.peChartInstance) window.peChartInstance.destroy();
+
+  window.peChartInstance = new Chart(ctx, {
+    type: "line",
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            color: isDark ? "#8b949e" : "#5f6577",
+            padding: 20, usePointStyle: true, pointStyle: "circle",
+            font: { size: 12, weight: 500 },
+          },
+        },
+        tooltip: {
+          backgroundColor: isDark ? "#21262d" : "#fff",
+          titleColor: isDark ? "#e6edf3" : "#1a1d26",
+          bodyColor: isDark ? "#8b949e" : "#5f6577",
+          borderColor: isDark ? "#30363d" : "#e2e4ea",
+          borderWidth: 1, padding: 12, cornerRadius: 8, displayColors: true,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}x` },
+        },
+      },
+      scales: {
+        x: {
+          ticks: { color: isDark ? "#6e7681" : "#8b90a0", font: { size: 11 }, maxTicksLimit: 12 },
+          grid: { color: isDark ? "rgba(48,54,61,0.5)" : "rgba(226,228,234,0.6)" },
+        },
+        y: {
+          ticks: {
+            color: isDark ? "#6e7681" : "#8b90a0", font: { size: 11 },
+            callback: v => v + "x",
+          },
+          grid: { color: isDark ? "rgba(48,54,61,0.5)" : "rgba(226,228,234,0.6)" },
+        },
+      },
+    },
+  });
+}
+
+// ════════════════════════════════════════
+//  CHART RANGE BUTTONS
+// ════════════════════════════════════════
+document.querySelectorAll(".chart-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".chart-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const range = btn.dataset.range;
+    currentRange = range === "1y" ? 12 : range === "3y" ? 36 : 60;
+    renderChart(currentRange);
+  });
+});
+
+// ════════════════════════════════════════
+//  THEME TOGGLE
+// ════════════════════════════════════════
+function toggleTheme() {
+  const body = document.body;
+  const isDark = body.getAttribute("data-theme") === "dark";
+  body.setAttribute("data-theme", isDark ? "light" : "dark");
+  document.getElementById("theme-icon").textContent = isDark ? "🌙" : "☀️";
+  document.getElementById("theme-label").textContent = isDark ? "Dark" : "Light";
+  if (peHistory) renderChart(currentRange);
+}
+
+// ════════════════════════════════════════
+//  CLOCK
+// ════════════════════════════════════════
+function updateClock() {
+  document.getElementById("clock").textContent =
+    new Date().toLocaleTimeString("en-US", { hour12: false });
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ════════════════════════════════════════
+//  MAIN LOOP — fetch data.json every 5s
+// ════════════════════════════════════════
+loadData();
+setInterval(loadData, 30000);
+</script>
+
+</body>
+</html>
