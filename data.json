@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-06-23T22:06:11Z",
+  "last_updated": "2026-06-24T10:28:57Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -7,10 +7,10 @@
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
       "price": 294.3,
-      "prev_close": 295.65,
-      "change_pct": -0.46,
+      "prev_close": 294.69,
+      "change_pct": -0.13,
       "trailing_pe": 35.6,
-      "eps": 8.26,
+      "eps": 8.27,
       "market_cap": 4322488745984
     },
     {
@@ -19,8 +19,8 @@
       "description": "Enterprise software, cloud computing (Azure), and productivity tools including Office 365 and Teams.",
       "color": "#0078d4",
       "price": 373.94,
-      "prev_close": 368.34,
-      "change_pct": 1.52,
+      "prev_close": 374.0,
+      "change_pct": -0.02,
       "trailing_pe": 22.3,
       "eps": 16.79,
       "market_cap": 2777788973056
@@ -31,10 +31,10 @@
       "description": "Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider.",
       "color": "#4285f4",
       "price": 346.13,
-      "prev_close": 346.3,
-      "change_pct": -0.05,
+      "prev_close": 348.17,
+      "change_pct": -0.58,
       "trailing_pe": 26.4,
-      "eps": 13.11,
+      "eps": 13.12,
       "market_cap": 4223676710912
     },
     {
@@ -43,10 +43,10 @@
       "description": "E-commerce and cloud infrastructure leader (AWS). Also expanding in advertising and AI services.",
       "color": "#ff9900",
       "price": 234.11,
-      "prev_close": 233.03,
-      "change_pct": 0.46,
-      "trailing_pe": 31.8,
-      "eps": 7.36,
+      "prev_close": 233.6,
+      "change_pct": 0.22,
+      "trailing_pe": 31.6,
+      "eps": 7.4,
       "market_cap": 2518346891264
     },
     {
@@ -55,10 +55,10 @@
       "description": "Designs GPUs and AI accelerators. The dominant supplier of chips powering AI training and inference.",
       "color": "#76b900",
       "price": 200.04,
-      "prev_close": 207.82,
-      "change_pct": -3.75,
-      "trailing_pe": 30.6,
-      "eps": 6.53,
+      "prev_close": 200.9,
+      "change_pct": -0.43,
+      "trailing_pe": 30.7,
+      "eps": 6.52,
       "market_cap": 4845168754688
     },
     {
@@ -67,10 +67,10 @@
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
       "price": 562.2,
-      "prev_close": 562.61,
-      "change_pct": -0.07,
-      "trailing_pe": 20.4,
-      "eps": 27.52,
+      "prev_close": 561.9,
+      "change_pct": 0.05,
+      "trailing_pe": 20.5,
+      "eps": 27.49,
       "market_cap": 1427101581312
     },
     {
@@ -79,10 +79,10 @@
       "description": "Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus).",
       "color": "#cc0000",
       "price": 381.61,
-      "prev_close": 403.66,
-      "change_pct": -5.46,
-      "trailing_pe": 350.1,
-      "eps": 1.09,
+      "prev_close": 382.46,
+      "change_pct": -0.22,
+      "trailing_pe": 343.8,
+      "eps": 1.11,
       "market_cap": 1433221726208
     }
   ],
