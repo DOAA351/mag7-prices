@@ -1,95 +1,94 @@
 {
-  "last_updated": "2026-07-02T10:15:37Z",
+  "last_updated": "2026-07-02T16:30:43Z",
   "stocks": [
     {
       "ticker": "AAPL",
       "name": "Apple Inc.",
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
-      "price": 294.38,
+      "price": 308.07,
       "prev_close": 294.64,
-      "change_pct": -0.09,
-      "trailing_pe": 35.6,
+      "change_pct": 4.56,
+      "trailing_pe": 37.3,
       "eps": 8.27,
-      "market_cap": 4323663937536
+      "market_cap": 4524734939136
     },
     {
       "ticker": "MSFT",
       "name": "Microsoft Corporation",
       "description": "Enterprise software, cloud computing (Azure), and productivity tools including Office 365 and Teams.",
       "color": "#0078d4",
-      "price": 384.28,
+      "price": 390.64,
       "prev_close": 385.0,
-      "change_pct": -0.19,
-      "trailing_pe": 22.9,
+      "change_pct": 1.46,
+      "trailing_pe": 23.3,
       "eps": 16.79,
-      "market_cap": 2854599000064
+      "market_cap": 2901843902464
     },
     {
       "ticker": "GOOGL",
       "name": "Alphabet Inc.",
       "description": "Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider.",
       "color": "#4285f4",
-      "price": 361.21,
+      "price": 355.38,
       "prev_close": 360.47,
-      "change_pct": 0.21,
-      "trailing_pe": 27.6,
+      "change_pct": -1.41,
+      "trailing_pe": 27.1,
       "eps": 13.11,
-      "market_cap": 4407691313152
+      "market_cap": 4336489332736
     },
     {
       "ticker": "AMZN",
       "name": "Amazon.com, Inc.",
       "description": "E-commerce and cloud infrastructure leader (AWS). Also expanding in advertising and AI services.",
       "color": "#ff9900",
-      "price": 241.7,
+      "price": 246.06,
       "prev_close": 242.63,
-      "change_pct": -0.38,
-      "trailing_pe": 31.6,
+      "change_pct": 1.41,
+      "trailing_pe": 32.2,
       "eps": 7.64,
-      "market_cap": 2599993475072
+      "market_cap": 2646679224320
     },
     {
       "ticker": "NVDA",
       "name": "NVIDIA Corporation",
       "description": "Designs GPUs and AI accelerators. The dominant supplier of chips powering AI training and inference.",
       "color": "#76b900",
-      "price": 197.58,
+      "price": 193.7,
       "prev_close": 197.04,
-      "change_pct": 0.27,
-      "trailing_pe": 30.3,
+      "change_pct": -1.7,
+      "trailing_pe": 29.7,
       "eps": 6.52,
-      "market_cap": 4785584996352
+      "market_cap": 4691365724160
     },
     {
       "ticker": "META",
       "name": "Meta Platforms, Inc.",
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
-      "price": 612.91,
+      "price": 586.84,
       "prev_close": 612.1,
-      "change_pct": 0.13,
-      "trailing_pe": 22.3,
+      "change_pct": -4.13,
+      "trailing_pe": 21.3,
       "eps": 27.52,
-      "market_cap": 1555824902144
+      "market_cap": 1489648353280
     },
     {
       "ticker": "TSLA",
       "name": "Tesla, Inc.",
       "description": "Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus).",
       "color": "#cc0000",
-      "price": 425.3,
+      "price": 392.42,
       "prev_close": 423.19,
-      "change_pct": 0.5,
-      "trailing_pe": 383.2,
+      "change_pct": -7.27,
+      "trailing_pe": 353.5,
       "eps": 1.11,
-      "market_cap": 1597309321216
+      "market_cap": 1473570930688
     }
   ],
   "price_history": {
     "AAPL": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -152,7 +151,6 @@
         "Jul 26"
       ],
       "closes": [
-        142.18,
         148.22,
         138.13,
         146.24,
@@ -212,13 +210,12 @@
         271.1,
         312.06,
         289.36,
-        294.38
+        308.07
       ],
       "color": "#555555"
     },
     "MSFT": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -281,13 +278,12 @@
         "Jul 26"
       ],
       "closes": [
-        273.43,
         290.27,
         271.08,
         318.86,
         318.46,
         323.97,
-        299.57,
+        299.56,
         288.42,
         297.61,
         267.89,
@@ -341,13 +337,12 @@
         406.9,
         450.24,
         373.02,
-        384.28
+        390.64
       ],
       "color": "#0078d4"
     },
     "GOOGL": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -410,7 +405,6 @@
         "Jul 26"
       ],
       "closes": [
-        133.54,
         143.43,
         132.5,
         146.74,
@@ -470,13 +464,12 @@
         384.57,
         380.11,
         357.37,
-        361.21
+        355.38
       ],
       "color": "#4285f4"
     },
     "AMZN": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -539,7 +532,6 @@
         "Jul 26"
       ],
       "closes": [
-        166.38,
         173.54,
         164.25,
         168.62,
@@ -599,13 +591,12 @@
         265.06,
         270.64,
         238.34,
-        241.7
+        246.06
       ],
       "color": "#ff9900"
     },
     "NVDA": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -668,7 +659,6 @@
         "Jul 26"
       ],
       "closes": [
-        19.43,
         22.31,
         20.65,
         25.48,
@@ -728,13 +718,12 @@
         199.34,
         210.89,
         200.09,
-        197.58
+        193.69
       ],
       "color": "#76b900"
     },
     "META": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -797,7 +786,6 @@
         "Jul 26"
       ],
       "closes": [
-        353.2,
         376.08,
         336.44,
         320.75,
@@ -857,13 +845,12 @@
         611.34,
         631.92,
         563.29,
-        612.91
+        586.92
       ],
       "color": "#0668e1"
     },
     "TSLA": {
       "dates": [
-        "Jul 21",
         "Aug 21",
         "Sep 21",
         "Oct 21",
@@ -926,7 +913,6 @@
         "Jul 26"
       ],
       "closes": [
-        229.07,
         245.24,
         258.49,
         371.33,
@@ -986,7 +972,7 @@
         381.63,
         435.79,
         420.6,
-        425.3
+        392.42
       ],
       "color": "#cc0000"
     }
