@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-16T09:01:59Z",
+  "last_updated": "2026-07-16T11:07:19Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -9,8 +9,8 @@
       "price": 327.5,
       "prev_close": 327.8,
       "change_pct": -0.09,
-      "trailing_pe": 38.2,
-      "eps": 8.58,
+      "trailing_pe": 39.7,
+      "eps": 8.25,
       "market_cap": 4810109091840
     },
     {
@@ -21,8 +21,8 @@
       "price": 395.63,
       "prev_close": 397.16,
       "change_pct": -0.39,
-      "trailing_pe": 22.9,
-      "eps": 17.25,
+      "trailing_pe": 23.6,
+      "eps": 16.77,
       "market_cap": 2938911850496
     },
     {
@@ -33,8 +33,8 @@
       "price": 370.92,
       "prev_close": 372.1,
       "change_pct": -0.32,
-      "trailing_pe": 27.4,
-      "eps": 13.54,
+      "trailing_pe": 28.3,
+      "eps": 13.09,
       "market_cap": 4526178304000
     },
     {
@@ -45,8 +45,8 @@
       "price": 254.96,
       "prev_close": 255.25,
       "change_pct": -0.11,
-      "trailing_pe": 29.6,
-      "eps": 8.62,
+      "trailing_pe": 30.5,
+      "eps": 8.36,
       "market_cap": 2742632841216
     },
     {
@@ -69,8 +69,8 @@
       "price": 681.31,
       "prev_close": 679.9,
       "change_pct": 0.21,
-      "trailing_pe": 24.0,
-      "eps": 28.34,
+      "trailing_pe": 24.8,
+      "eps": 27.52,
       "market_cap": 1729453228032
     },
     {
