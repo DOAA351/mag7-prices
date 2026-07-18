@@ -1,17 +1,17 @@
 {
-  "last_updated": "2026-07-18T05:51:01Z",
+  "last_updated": "2026-07-18T07:21:21Z",
   "stocks": [
     {
       "ticker": "AAPL",
-      "name": "AAPL",
+      "name": "Apple Inc.",
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
       "price": 333.74,
       "prev_close": 334.83,
       "change_pct": -0.33,
-      "trailing_pe": null,
-      "eps": null,
-      "market_cap": 0
+      "trailing_pe": 40.3,
+      "eps": 8.28,
+      "market_cap": 4901757779968
     },
     {
       "ticker": "MSFT",
