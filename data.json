@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-07-20T10:25:05Z",
+  "last_updated": "2026-07-20T12:31:29Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -75,15 +75,15 @@
     },
     {
       "ticker": "TSLA",
-      "name": "Tesla, Inc.",
+      "name": "TSLA",
       "description": "Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus).",
       "color": "#cc0000",
       "price": 380.84,
       "prev_close": 380.03,
       "change_pct": 0.21,
-      "trailing_pe": 346.2,
-      "eps": 1.1,
-      "market_cap": 1430329884672
+      "trailing_pe": null,
+      "eps": null,
+      "market_cap": 0
     }
   ],
   "price_history": {
@@ -181,7 +181,7 @@
         187.82,
         190.38,
         182.34,
-        178.96,
+        178.95,
         169.78,
         168.64,
         190.6,
@@ -281,7 +281,7 @@
         290.27,
         271.08,
         318.86,
-        318.46,
+        318.45,
         323.97,
         299.56,
         288.42,
