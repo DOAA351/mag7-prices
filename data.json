@@ -1,89 +1,89 @@
 {
-  "last_updated": "2026-07-22T17:56:13Z",
+  "last_updated": "2026-07-22T19:17:55Z",
   "stocks": [
     {
       "ticker": "AAPL",
       "name": "Apple Inc.",
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
-      "price": 323.89,
+      "price": 324.47,
       "prev_close": 324.5,
-      "change_pct": -0.19,
-      "trailing_pe": 39.2,
+      "change_pct": -0.01,
+      "trailing_pe": 39.3,
       "eps": 8.26,
-      "market_cap": 4757089419264
+      "market_cap": 4765533077504
     },
     {
       "ticker": "MSFT",
       "name": "Microsoft Corporation",
       "description": "Enterprise software, cloud computing (Azure), and productivity tools including Office 365 and Teams.",
       "color": "#0078d4",
-      "price": 387.4,
+      "price": 389.43,
       "prev_close": 396.15,
-      "change_pct": -2.21,
-      "trailing_pe": 23.1,
+      "change_pct": -1.7,
+      "trailing_pe": 23.2,
       "eps": 16.79,
-      "market_cap": 2877774888960
+      "market_cap": 2892892471296
     },
     {
       "ticker": "GOOGL",
       "name": "Alphabet Inc.",
       "description": "Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider.",
       "color": "#4285f4",
-      "price": 347.26,
+      "price": 345.58,
       "prev_close": 348.89,
-      "change_pct": -0.47,
-      "trailing_pe": 26.5,
+      "change_pct": -0.95,
+      "trailing_pe": 26.3,
       "eps": 13.12,
-      "market_cap": 4237343326208
+      "market_cap": 4217026117632
     },
     {
       "ticker": "AMZN",
       "name": "Amazon.com, Inc.",
       "description": "E-commerce and cloud infrastructure leader (AWS). Also expanding in advertising and AI services.",
       "color": "#ff9900",
-      "price": 242.68,
+      "price": 244.42,
       "prev_close": 246.79,
-      "change_pct": -1.67,
-      "trailing_pe": 29.0,
+      "change_pct": -0.96,
+      "trailing_pe": 29.2,
       "eps": 8.37,
-      "market_cap": 2610535333888
+      "market_cap": 2629252677632
     },
     {
       "ticker": "NVDA",
       "name": "NVIDIA Corporation",
       "description": "Designs GPUs and AI accelerators. The dominant supplier of chips powering AI training and inference.",
       "color": "#76b900",
-      "price": 213.6,
+      "price": 213.44,
       "prev_close": 206.35,
-      "change_pct": 3.51,
+      "change_pct": 3.44,
       "trailing_pe": 32.7,
       "eps": 6.53,
-      "market_cap": 5173847523328
+      "market_cap": 5169851400192
     },
     {
       "ticker": "META",
       "name": "Meta Platforms, Inc.",
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
-      "price": 625.62,
+      "price": 626.12,
       "prev_close": 641.0,
-      "change_pct": -2.4,
+      "change_pct": -2.32,
       "trailing_pe": 22.8,
       "eps": 27.49,
-      "market_cap": 1588088406016
+      "market_cap": 1589370290176
     },
     {
       "ticker": "TSLA",
       "name": "Tesla, Inc.",
       "description": "Electric vehicles, energy storage and solar. Also developing autonomous driving and robotics (Optimus).",
       "color": "#cc0000",
-      "price": 376.28,
+      "price": 374.41,
       "prev_close": 379.5,
-      "change_pct": -0.85,
-      "trailing_pe": 342.1,
+      "change_pct": -1.34,
+      "trailing_pe": 340.5,
       "eps": 1.1,
-      "market_cap": 1413203755008
+      "market_cap": 1406518558720
     }
   ],
   "price_history": {
@@ -181,7 +181,7 @@
         187.82,
         190.38,
         182.34,
-        178.95,
+        178.96,
         169.78,
         168.64,
         190.6,
@@ -210,7 +210,7 @@
         271.1,
         312.06,
         289.36,
-        323.89
+        324.46
       ],
       "color": "#555555"
     },
@@ -337,7 +337,7 @@
         406.9,
         450.24,
         373.02,
-        387.4
+        389.43
       ],
       "color": "#0078d4"
     },
@@ -464,7 +464,7 @@
         384.57,
         380.11,
         357.37,
-        347.25
+        345.58
       ],
       "color": "#4285f4"
     },
@@ -591,7 +591,7 @@
         265.06,
         270.64,
         238.34,
-        242.68
+        244.43
       ],
       "color": "#ff9900"
     },
@@ -718,7 +718,7 @@
         199.34,
         210.89,
         200.09,
-        213.6
+        213.45
       ],
       "color": "#76b900"
     },
@@ -845,7 +845,7 @@
         611.34,
         631.92,
         563.29,
-        625.62
+        626.12
       ],
       "color": "#0668e1"
     },
@@ -972,7 +972,7 @@
         381.63,
         435.79,
         420.6,
-        376.28
+        374.5
       ],
       "color": "#cc0000"
     }
