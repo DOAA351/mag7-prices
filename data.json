@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-19T09:04:18Z",
+  "last_updated": "2026-08-19T09:44:49Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -7,8 +7,8 @@
       "description": "Consumer electronics, software and services. Maker of iPhone, Mac, iPad and the iOS ecosystem.",
       "color": "#555555",
       "price": 310.03,
-      "prev_close": 310.22,
-      "change_pct": -0.06,
+      "prev_close": 305.59,
+      "change_pct": 1.45,
       "trailing_pe": 35.1,
       "eps": 8.84,
       "market_cap": 4524633751552
@@ -151,7 +151,7 @@
         "Aug 26"
       ],
       "closes": [
-        138.01,
+        138.02,
         146.11,
         161.46,
         173.45,
