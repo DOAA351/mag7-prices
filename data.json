@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-08-21T02:35:53Z",
+  "last_updated": "2026-08-21T03:33:23Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -33,8 +33,8 @@
       "price": 340.67,
       "prev_close": 344.9,
       "change_pct": -1.23,
-      "trailing_pe": 17.1,
-      "eps": 19.92,
+      "trailing_pe": 17.3,
+      "eps": 19.69,
       "market_cap": 4166372032512
     },
     {
