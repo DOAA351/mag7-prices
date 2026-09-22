@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-09-21T22:37:24Z",
+  "last_updated": "2026-09-22T01:08:17Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -66,7 +66,7 @@
       "name": "Meta Platforms, Inc.",
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
-      "price": 741.24,
+      "price": 741.25,
       "prev_close": 668.55,
       "change_pct": 10.87,
       "trailing_pe": 27.9,
