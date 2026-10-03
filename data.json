@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-03T18:21:34Z",
+  "last_updated": "2026-10-03T21:29:48Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -21,8 +21,8 @@
       "price": 517.53,
       "prev_close": 515.32,
       "change_pct": 0.43,
-      "trailing_pe": 28.6,
-      "eps": 18.11,
+      "trailing_pe": 28.8,
+      "eps": 17.96,
       "market_cap": 3842942959616
     },
     {
@@ -45,8 +45,8 @@
       "price": 251.52,
       "prev_close": 248.9,
       "change_pct": 1.05,
-      "trailing_pe": 20.0,
-      "eps": 12.6,
+      "trailing_pe": 20.2,
+      "eps": 12.43,
       "market_cap": 2712973606912
     },
     {
@@ -63,15 +63,15 @@
     },
     {
       "ticker": "META",
-      "name": "Meta Platforms, Inc.",
+      "name": "META",
       "description": "Social media conglomerate. Operates Facebook, Instagram, WhatsApp and invests heavily in VR/AR.",
       "color": "#0668e1",
       "price": 728.08,
       "prev_close": 726.78,
       "change_pct": 0.18,
-      "trailing_pe": 27.3,
-      "eps": 26.65,
-      "market_cap": 1854788337664
+      "trailing_pe": null,
+      "eps": null,
+      "market_cap": 0
     },
     {
       "ticker": "TSLA",
