@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-20T23:25:12Z",
+  "last_updated": "2026-10-21T01:49:35Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -30,7 +30,7 @@
       "name": "Alphabet Inc.",
       "description": "Parent of Google. Dominates search, digital ads, YouTube and is a major cloud provider.",
       "color": "#4285f4",
-      "price": 340.27,
+      "price": 340.28,
       "prev_close": 344.42,
       "change_pct": -1.2,
       "trailing_pe": 17.1,
