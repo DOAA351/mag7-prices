@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-10-31T07:33:10Z",
+  "last_updated": "2026-10-31T13:50:23Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -21,8 +21,8 @@
       "price": 521.91,
       "prev_close": 529.05,
       "change_pct": -1.35,
-      "trailing_pe": 26.8,
-      "eps": 19.46,
+      "trailing_pe": 27.2,
+      "eps": 19.16,
       "market_cap": 3875804807168
     },
     {
@@ -47,7 +47,7 @@
       "change_pct": 6.35,
       "trailing_pe": 19.4,
       "eps": 12.37,
-      "market_cap": 2598423756800
+      "market_cap": 2598937821184
     },
     {
       "ticker": "NVDA",
