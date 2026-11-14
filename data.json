@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-11-14T09:29:34Z",
+  "last_updated": "2026-11-14T15:59:21Z",
   "stocks": [
     {
       "ticker": "AAPL",
@@ -71,7 +71,7 @@
       "change_pct": 2.47,
       "trailing_pe": 21.9,
       "eps": 29.31,
-      "market_cap": 1640694153216
+      "market_cap": 1640314437632
     },
     {
       "ticker": "TSLA",
